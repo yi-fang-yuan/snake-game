@@ -11,13 +11,13 @@ class Game {
         this.food = new Food();
         this.point = 0;
     }
-    score(){
-           this.point += 1;
+    score() {
+        this.point += 1;
 
     }
-    displayScore(){
-        fill(500,240,300);
-        text("Highest Score :" +  this.point, 200, 200)
+    displayScore() {
+        fill(500, 240, 300);
+        text("Highest Score :" + this.point, 200, 200)
     }
 
 }
@@ -28,17 +28,25 @@ class Snake {
         this.newHead;
     }
     handleKeys(key) {
+        let newDirection = createVector(0,0);
         if (key === "ArrowUp" ) {
-            this.direction = createVector(0, -1);
-        } else if (key === "ArrowRight" ) {
-            this.direction = createVector(1, 0);
-        } else if (key === "ArrowDown" ) {
-            this.direction = createVector(0, 1);
+            newDirection = createVector(0, -1);
+        }  if (key === "ArrowRight") {
+            newDirection = createVector(1, 0);
+        }  if (key === "ArrowDown") {
+            newDirection = createVector(0, 1);
         }
-        else if (key === "ArrowLeft" ) {
-            this.direction = createVector(-1, 0);
+         if (key === "ArrowLeft") {
+            newDirection = createVector(-1, 0);
+        }
+        if (this.direction.x + newDirection.x == 0 && this.direction.y + newDirection.y == 0) {
+            this.direction = this.direction;
+        }
+        else {
+            this.direction = newDirection; 
         }
     }
+
     display() {
         for (let part of this.body) {
             let scaleGraph = p5.Vector.mult(part, gridWidth);
@@ -55,7 +63,10 @@ class Snake {
     handleFood(food) {
         if (this.body[0].x == food.x && this.body[0].y == food.y) {
             this.body.push(this.newHead);
-            return true;
+            while (this.checkOnBody(food.x, food.y)) {
+                food.generatePos();
+            }
+
         }
     }
     getFood() {
@@ -65,38 +76,28 @@ class Snake {
     }
 
     bordercollision() {
-        if (this.body[0].x == posX - 1 || this.body[0].y == posY - 1 || this.body[0].x == -1 || this.body[0].y == -1) {
+        if (this.body[0].x == posX || this.body[0].y === posY || this.body[0].x == -1 || this.body[0].y == -1) {
             return true;
         }
 
     }
     collision() {
-        for (let i = 1; i < this.body.length - 1; i++) {
-            if (this.body[0].x == this.body[i].x && this.body[0].y == this.body[i].y) {
+        if (this.checkOnBody(this.body[0].x , this.body[0].y , 4)) {
+            return true;
+        }
+        else {
+            return false; 
+        }
+    }
+    checkOnBody(x, y, startIndex = 0) {
+        for (let i = startIndex; i < this.body.length; i++) {
+            if (x == this.body[i].x && y == this.body[i].y) {
                 return true;
             }
+            else {
+                return false;
+            }
         }
-    }
-    checkDir() 
-    {
-        if (this.body.length > 1) {
-        if (this.body[0].x == this.body[1].x && this.body[0].y == this.body[1].y) {
-
-
-            // if (this.handleKeys(key) === "ArrowUp") {
-            //     this.direction = createVector(0, 1);
-            // }
-            // else if (this.handleKeys(key) === "ArrowDown") {
-            //     this.direction = createVector(0,-1);
-            // }
-            // else if (this.handleKeys(key) === "ArrowRight") {
-            //     this.direction = createVector(-1, 0);
-            // }
-            // else if (this.handleKeys(key) === "ArrowLeft") {
-            //     this.direction = createaVector(1,0);
-            // }
-        }
-    }
     }
 }
 
@@ -116,13 +117,13 @@ class Food {
 }
 
 function setup() {
-    createCanvas(window.innerWidth, window.innerHeight);
+    createCanvas(window.innerWidth, 800);
     posX = width / gridWidth;
     posY = height / gridWidth;
     food = new Food();
     food.generatePos();
     snake = new Snake();
-    game = new Game(); 
+    game = new Game();
 }
 function draw() {
     if (frameCount % 5 == 0) {
@@ -131,19 +132,17 @@ function draw() {
         snake.display();
         snake.handleFood(food);
         snake.update();
-        if (snake.getFood()) {
-            food.generatePos();
-            game.score();
-        }
         if (snake.collision()) {
             noLoop();
             game.displayScore();
-           
+        }
+        if (snake.getFood()) {
+            game.score();
         }
         if (snake.bordercollision()) {
             noLoop();
             game.displayScore();
-           
+
         }
     }
 }
