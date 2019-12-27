@@ -1,3 +1,4 @@
+
 let posX;
 let posY;
 let gridWidth = 20;
@@ -17,7 +18,10 @@ class Game {
     }
     displayScore() {
         fill(500, 240, 300);
-        text("Highest Score :" + this.point, 200, 200)
+        textAlign(CENTER)
+        textSize(100)
+        textStyle(ITALIC)
+        text("Highest Score : " + this.point, width/2, height/2)
     }
 
 }
@@ -66,6 +70,7 @@ class Snake {
             while (this.checkOnBody(food.x, food.y)) {
                 food.generatePos();
             }
+            return true;
 
         }
     }
@@ -116,8 +121,9 @@ class Food {
     }
 }
 
+
 function setup() {
-    createCanvas(window.innerWidth, 800);
+    createCanvas(window.innerWidth, 1000);
     posX = width / gridWidth;
     posY = height / gridWidth;
     food = new Food();
