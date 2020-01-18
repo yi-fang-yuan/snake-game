@@ -81,7 +81,7 @@ class Snake {
     }
 
     bordercollision() {
-        if (this.body[0].x == posX || this.body[0].y === posY || this.body[0].x == -1 || this.body[0].y == -1) {
+        if (this.body[0].x == posX || this.body[0].y == posY || this.body[0].x == -1 || this.body[0].y == -1) {
             return true;
         }
 
@@ -96,10 +96,12 @@ class Snake {
     }
     checkOnBody(x, y, startIndex = 0) {
         for (let i = startIndex; i < this.body.length; i++) {
-            if (x == this.body[i].x && y == this.body[i].y) {
+            if (x == this.body[i].x && y == this.body[i].y) 
+            {
                 return true;
             }
-            else {
+            else 
+            {
                 return false;
             }
         }
@@ -116,14 +118,14 @@ class Food {
         this.y = Math.floor(Math.random() * posY);
     }
     display() {
-        fill(250);
+        fill(20,200,50);
         square(this.x * gridWidth, this.y * gridWidth, gridWidth);
     }
 }
 
 
 function setup() {
-    createCanvas(window.innerWidth, 1000);
+    createCanvas(window.innerWidth, window.innerHeight);
     posX = width / gridWidth;
     posY = height / gridWidth;
     food = new Food();
